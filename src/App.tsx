@@ -1,6 +1,12 @@
-import React from 'react';
+import * as React from 'react';
+import classNames from 'classnames';
 import 'bulma/css/bulma.css';
 import './App.scss';
+
+export const buttons = [
+  { id: 'name', value: 'Sort alphabetically', class: 'is-info' },
+  { id: 'length', value: 'Sort by length', class: 'is-success' },
+];
 
 export const goodsFromServer = [
   'Dumplings',
@@ -15,37 +21,97 @@ export const goodsFromServer = [
   'Garlic',
 ];
 
+interface GoodListProps {
+  goods: string[];
+}
+
+export const GoodList: React.FC<GoodListProps> = ({ goods }) => (
+  <ul className="GoodList">
+    {goods.map(good => (
+      // eslint-disable-next-line prettier/prettier
+      <li key={good} data-cy="Good" className="Good">
+        {good}
+      </li>
+    ))}
+  </ul>
+);
+
+export const isOrigin = (a, b) => {
+  return a === '' && b === false;
+};
+
 export const App: React.FC = () => {
+  enum SortField {
+    None = '',
+    Length = 'length',
+    Name = 'name',
+  }
+
+  const [sortField, setSortField] = React.useState<SortField>(SortField.None);
+  const [reversed, setReversed] = React.useState<boolean>(false);
+  let visibleGoods = [...goodsFromServer];
+
+  const handleReseted = () => {
+    setSortField(SortField.None);
+    setReversed(false);
+  };
+
+  if (sortField) {
+    visibleGoods = visibleGoods.slice().sort((a, b) => {
+      switch (sortField) {
+        case 'length':
+          return a.length - b.length;
+        case 'name':
+          return a.localeCompare(b);
+        default:
+          return 0;
+      }
+    });
+  }
+
+  if (reversed) {
+    visibleGoods = visibleGoods.toReversed();
+  }
+
   return (
     <div className="section content">
       <div className="buttons">
-        <button type="button" className="button is-info is-light">
-          Sort alphabetically
-        </button>
+        {buttons.map(butt => (
+          <button
+            type="button"
+            key={butt.id}
+            className={classNames('button', butt.class, {
+              'is-light': sortField !== butt.id,
+            })}
+            onClick={() =>  setSortField(butt.id) }
+          >
+            {butt.value}
+          </button>
+        ))}
 
-        <button type="button" className="button is-success is-light">
-          Sort by length
-        </button>
-
-        <button type="button" className="button is-warning is-light">
+        <button
+          type="button"
+          key="reverse"
+          className={classNames('button', 'is-warning', {
+            'is-light': !reversed,
+          })}
+          onClick={() => setReversed(!reversed)}
+        >
           Reverse
         </button>
-
-        <button type="button" className="button is-danger is-light">
-          Reset
-        </button>
+        {!isOrigin(sortField, reversed) && (
+          <button
+            type="button"
+            key="reset"
+            className="button is-danger is-light"
+            onClick={handleReseted}
+          >
+            Reset
+          </button>
+        )}
       </div>
 
-      <ul>
-        <ul>
-          <li data-cy="Good">Dumplings</li>
-          <li data-cy="Good">Carrot</li>
-          <li data-cy="Good">Eggs</li>
-          <li data-cy="Good">Ice cream</li>
-          <li data-cy="Good">Apple</li>
-          <li data-cy="Good">...</li>
-        </ul>
-      </ul>
+      <GoodList goods={visibleGoods} />
     </div>
   );
 };
