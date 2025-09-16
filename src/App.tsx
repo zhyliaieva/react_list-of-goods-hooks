@@ -2,6 +2,8 @@ import * as React from 'react';
 import classNames from 'classnames';
 import 'bulma/css/bulma.css';
 import './App.scss';
+import { SortType } from './components/SortType';
+import { ButtonType } from './components/ButtonType';
 
 export const buttons = [
   { id: 'name', value: 'Sort alphabetically', class: 'is-info' },
@@ -41,14 +43,9 @@ export const isOrigin = (a, b) => {
 };
 
 export const App: React.FC = () => {
-  enum SortType {
-    None = '',
-    Length = 'length',
-    Name = 'name',
-    Id = 'id',
-  }
-
-  const [sortField, setSortField] = React.useState<SortType>(SortType.None);
+  const [sortField, setSortField] = React.useState<SortType | ButtonType | ''>(
+    SortType.None,
+  );
   const [reversed, setReversed] = React.useState<boolean>(false);
   let visibleGoods = [...goodsFromServer];
 
@@ -84,7 +81,7 @@ export const App: React.FC = () => {
             className={classNames('button', butt.class, {
               'is-light': sortField !== butt.id,
             })}
-            onClick={() => setSortField(butt.id as SortType)}
+            onClick={() => setSortField(butt.id as ButtonType)}
           >
             {butt.value}
           </button>
