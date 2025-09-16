@@ -6,8 +6,8 @@ import { SortType } from './components/SortType';
 import { ButtonType } from './components/ButtonType';
 
 export const buttons = [
-  { id: 'name', value: 'Sort alphabetically', class: 'is-info' },
-  { id: 'length', value: 'Sort by length', class: 'is-success' },
+  { id: 'name', value: 'Sort alphabetically', className: 'is-info' },
+  { id: 'length', value: 'Sort by length', className: 'is-success' },
 ];
 
 export const goodsFromServer = [
@@ -78,8 +78,8 @@ export const App: React.FC = () => {
           <button
             type="button"
             key={butt.id}
-            className={classNames('button', butt.class, {
-              'is-light': sortField !== butt.id,
+            className={classNames('button', butt.className, {
+              'is-light': sortField !== ButtonType.Id,
             })}
             onClick={() => setSortField(butt.id as ButtonType)}
           >
