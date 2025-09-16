@@ -79,7 +79,7 @@ export const App: React.FC = () => {
             type="button"
             key={butt.id}
             className={classNames('button', butt.className, {
-              'is-light': sortField !== ButtonType.Id,
+              'is-light': sortField !== butt.id,
             })}
             onClick={() => setSortField(butt.id as ButtonType)}
           >
