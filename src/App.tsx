@@ -41,27 +41,28 @@ export const isOrigin = (a, b) => {
 };
 
 export const App: React.FC = () => {
-  enum SortField {
+  enum SortType {
     None = '',
     Length = 'length',
     Name = 'name',
+    Id = 'id',
   }
 
-  const [sortField, setSortField] = React.useState<SortField>(SortField.None);
+  const [sortField, setSortField] = React.useState<SortType>(SortType.None);
   const [reversed, setReversed] = React.useState<boolean>(false);
   let visibleGoods = [...goodsFromServer];
 
   const handleReseted = () => {
-    setSortField(SortField.None);
+    setSortField(SortType.None);
     setReversed(false);
   };
 
   if (sortField) {
     visibleGoods = visibleGoods.slice().sort((a, b) => {
       switch (sortField) {
-        case 'length':
+        case SortType.Length:
           return a.length - b.length;
-        case 'name':
+        case SortType.Name:
           return a.localeCompare(b);
         default:
           return 0;
@@ -83,7 +84,7 @@ export const App: React.FC = () => {
             className={classNames('button', butt.class, {
               'is-light': sortField !== butt.id,
             })}
-            onClick={() =>  setSortField(butt.id) }
+            onClick={() => setSortField(butt.id as SortType)}
           >
             {butt.value}
           </button>
